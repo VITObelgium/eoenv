@@ -28,3 +28,10 @@ The default password is `jupyter`.
 To verify the anaconda installation, open a *new* terminal, you should see `(base)` on the left of the line prompt. Furthermore running `which conda` should return the path to the `conda` binary. 
 
 To activate the `eo` environment, run `conda activate eo`.
+
+### Interactive plotting
+
+In a notbook cell, before importing `matplotlib` execute `%matplotlib widget`.
+
+When exporting notebooks to html the interactive plots will not be rendered, for that purpose use
+`%matplotlib inline`
