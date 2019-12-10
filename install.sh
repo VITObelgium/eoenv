@@ -7,8 +7,8 @@ export USERNAME=`id -u -n`
 export ENV_NAME="eo"  # This should be the name of the environment
 export CONDA_ENV_YML="eoenv/environment.yml"
 
-export HOME="/home/$USERNAME"
-export MINICONDA_PATH="/home/$USERNAME/miniconda3/bin"
+# export HOME="/home/$USERNAME"
+export MINICONDA_PATH="$HOME/miniconda3/bin"
 
 export JUPYTER_PORT="9090"
 
@@ -19,16 +19,26 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
 
 $MINICONDA_PATH/conda init
 
+# the above command will paste a block of code to .bashrc
+# On the MEP .bashrc is handles by Puppet, which means that to make
+# anaconda initialization permanent we need to copy and paste that block
+# to .user_aliases. This is carried out with the command below
 sed "s/dzanaga/${USERNAME}/g" eoenv/user_aliases_conda.sh >> .user_aliases
 source .bashrc
 
+# configure conda to always install first from conda-forge
+# this avoids conflicts
 conda config --set channel_priority strict
 conda config --add channels conda-forge
 
-# Install Nodejs (needed for ipympl interactive plots in matplotlib)
+# Install Nodejs (needed for ipympl interactive plots with matplotlib in jupyter)
 conda install -y nodejs
+
+# Install default packages of the base environment
 pip install jupyterlab ipykernel ipympl python-language-server flake8 autopep8 \
             rmate
+
+# Compile jupyterlab extensions for interactive plots
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 jupyter labextension install jupyter-matplotlib
 
@@ -41,10 +51,11 @@ conda activate $ENV_NAME
 python -m ipykernel install --user --name $ENV_NAME --display-name "Python 3.7 ($ENV_NAME)"
 
 # Install Jupyter Server as a system service
-jupyter notebook --generate-config  # generate config file
-
+# generate config file and add hashed password 'jupyter'
+jupyter notebook --generate-config  
 echo "c.NotebookApp.password = 'sha1:0e87afb7b28b:eeff20d53c6bd5c48fbd893888280fdaa54a7888'" >> ~/.jupyter/jupyter_notebook_config.py
 
+# generate system service
 printf """[Unit]
 Description=Jupyter Lab Server
 
