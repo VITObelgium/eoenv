@@ -15,10 +15,9 @@ If on Windows, you can use the [SSH Tunnel](https://www.microsoft.com/store/prod
 
 From your VM terminal:
 ```
-cd ~
 git clone https://git.vito.be/scm/lclu/eoenv.git
-
-bash eoenv/install.sh
+cd eoenv
+bash install.sh
 ```
 
 Once the installation is completed you should be able to open jupyter at `localhost:9090`
