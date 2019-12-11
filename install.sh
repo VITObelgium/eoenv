@@ -1,5 +1,5 @@
-# copy eoenv folder to your VM home folder, execute ./eoenv/install_conda_auto.sh
-# from the home directory
+# stop in case of errors
+set -e
 
 # check that USERNAME is set to your username
 export USERNAME=`id -u -n`
@@ -12,42 +12,42 @@ export MINICONDA_PATH="$HOME/miniconda3/bin"
 
 export JUPYTER_PORT="9090"
 
-# Download latest miniconda and install
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-     bash Miniconda3-latest-Linux-x86_64.sh -b -p ${MINICONDA_PREFIX} && \
-     rm Miniconda3-latest-Linux-x86_64.sh
+# # Download latest miniconda and install
+# wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+#      bash Miniconda3-latest-Linux-x86_64.sh -b -p ${MINICONDA_PREFIX} && \
+#      rm Miniconda3-latest-Linux-x86_64.sh
 
-$MINICONDA_PATH/conda init
+# $MINICONDA_PATH/conda init
 
-# the above command will paste a block of code to .bashrc
-# On the MEP, .bashrc is handles by Puppet, which means that to make
-# anaconda initialization permanent we need to copy and paste that block
-# to .user_aliases. This is carried out with the command below
-sed "s/dzanaga/${USERNAME}/g" user_aliases_conda.sh >> .user_aliases
-source .bashrc
+# # the above command will paste a block of code to .bashrc
+# # On the MEP, .bashrc is handles by Puppet, which means that to make
+# # anaconda initialization permanent we need to copy and paste that block
+# # to .user_aliases. This is carried out with the command below
+# sed "s/dzanaga/${USERNAME}/g" user_aliases_conda.sh >> ${HOME}/.user_aliases
+# source ${HOME}/.bashrc
 
-# configure conda to always install first from conda-forge
-# this avoids conflicts
-conda config --set channel_priority strict
-conda config --add channels conda-forge
+# # configure conda to always install first from conda-forge
+# # this avoids conflicts
+# conda config --set channel_priority strict
+# conda config --add channels conda-forge
 
-# Install Nodejs (needed for ipympl interactive plots with matplotlib in jupyter)
-conda install -y nodejs
+# # Install Nodejs (needed for ipympl interactive plots with matplotlib in jupyter)
+# conda install -y nodejs
 
-# Install default packages of the base environment
-pip install -r requirements.txt
+# # Install default packages of the base environment
+# pip install -r requirements.txt
 
-# Compile jupyterlab extensions for interactive plots
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-jupyter labextension install jupyter-matplotlib
+# # Compile jupyterlab extensions for interactive plots
+# jupyter labextension install @jupyter-widgets/jupyterlab-manager
+# jupyter labextension install jupyter-matplotlib
 
 # Install `eo` environment from yml file
 conda env create -f ${CONDA_ENV_YML}
 
 # Activate environment and install ipykernel for jupyter
 source $(conda info --base)/etc/profile.d/conda.sh
-conda activate $ENV_NAME
-python -m ipykernel install --user --name $ENV_NAME --display-name "Python 3.7 ($ENV_NAME)"
+conda activate ${ENV_NAME}
+python -m ipykernel install --user --name ${ENV_NAME} --display-name "Python 3.7 (${ENV_NAME})"
 
 # Install Jupyter Server as a system service
 # generate config file and add hashed password 'jupyter'
@@ -73,5 +73,9 @@ WantedBy=multi-user.target
 
 sudo mv jupyter.service /etc/systemd/system/jupyter.service
 
+# Enable and start jupyter server system service
 sudo systemctl enable jupyter.service
 sudo systemctl start jupyter.service
+
+# to check the it's running
+# sudo systemctl status -l jupyter.service
