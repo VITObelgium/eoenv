@@ -1,0 +1,6 @@
+jupyterlab==1.2.4
+ipympl==0.3.3
+python-language-server==0.31.2
+flake8==3.7.8
+autopep8==1.4.4
+rmate==1.0.3

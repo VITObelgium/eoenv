@@ -1,29 +1,29 @@
 # copy eoenv folder to your VM home folder, execute ./eoenv/install_conda_auto.sh
 # from the home directory
-cd ${HOME}
 
 # check that USERNAME is set to your username
 export USERNAME=`id -u -n`
 export ENV_NAME="eo"  # This should be the name of the environment
-export CONDA_ENV_YML="eoenv/environment.yml"
+export CONDA_ENV_YML="environment.yml"
 
 # export HOME="/home/$USERNAME"
+export MINICONDA_PREFIX="$HOME/miniconda3"
 export MINICONDA_PATH="$HOME/miniconda3/bin"
 
 export JUPYTER_PORT="9090"
 
 # Download latest miniconda and install
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b && \
-    rm Miniconda3-latest-Linux-x86_64.sh
+     bash Miniconda3-latest-Linux-x86_64.sh -b -p ${MINICONDA_PREFIX} && \
+     rm Miniconda3-latest-Linux-x86_64.sh
 
 $MINICONDA_PATH/conda init
 
 # the above command will paste a block of code to .bashrc
-# On the MEP .bashrc is handles by Puppet, which means that to make
+# On the MEP, .bashrc is handles by Puppet, which means that to make
 # anaconda initialization permanent we need to copy and paste that block
 # to .user_aliases. This is carried out with the command below
-sed "s/dzanaga/${USERNAME}/g" eoenv/user_aliases_conda.sh >> .user_aliases
+sed "s/dzanaga/${USERNAME}/g" user_aliases_conda.sh >> .user_aliases
 source .bashrc
 
 # configure conda to always install first from conda-forge
@@ -35,8 +35,7 @@ conda config --add channels conda-forge
 conda install -y nodejs
 
 # Install default packages of the base environment
-pip install jupyterlab ipykernel ipympl python-language-server flake8 autopep8 \
-            rmate
+pip install -r requirements.txt
 
 # Compile jupyterlab extensions for interactive plots
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
@@ -52,7 +51,7 @@ python -m ipykernel install --user --name $ENV_NAME --display-name "Python 3.7 (
 
 # Install Jupyter Server as a system service
 # generate config file and add hashed password 'jupyter'
-jupyter notebook --generate-config  
+jupyter notebook --generate-config -y
 echo "c.NotebookApp.password = 'sha1:0e87afb7b28b:eeff20d53c6bd5c48fbd893888280fdaa54a7888'" >> ~/.jupyter/jupyter_notebook_config.py
 
 # generate system service
@@ -70,7 +69,7 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-""" >> jupyter.service
+""" > jupyter.service
 
 sudo mv jupyter.service /etc/systemd/system/jupyter.service
 
