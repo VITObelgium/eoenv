@@ -3,6 +3,8 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - awscli==1.16.301
+  - boto3==1.10.37
   - conda-pack=0.4.0
   - gdal=2.4.3
   - geopandas=0.6.1
@@ -21,8 +23,6 @@ dependencies:
   - xarray=0.14.1
   - pip:
     - autopep8==1.4.4
-    - awscli==1.16.301
-    - boto3==1.10.37
     - descartes==1.1.0
     - docker==4.1.0
     - eo-learn==0.6.0
