@@ -16,7 +16,7 @@ export JUPYTER_PORT="9090"
 sudo apt-get update && sudo apt-get install -y gcc
 
 # install docker
-sudo apt install docker.io 
+sudo apt install -y docker.io 
 sudo systemctl start docker
 sudo systemctl enable docker
 

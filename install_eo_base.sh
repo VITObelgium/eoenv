@@ -30,6 +30,7 @@ conda config --set channel_priority strict
 conda config --add channels conda-forge
 
 # Install `eo` libraries from yml file
-conda env update -f ${CONDA_ENV_YML}
+sed "s/name: eo/name: base/g" ${CONDA_ENV_YML} > environment_base.yml
+conda env update -f environment_base.yml
 
 

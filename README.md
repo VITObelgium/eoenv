@@ -34,3 +34,39 @@ In a notbook cell, before importing `matplotlib` execute `%matplotlib widget`.
 
 When exporting notebooks to html the interactive plots will not be rendered, for that purpose use
 `%matplotlib inline`
+
+
+# Additional scripts
+
+## `install_eo_base.sh`
+
+Installs only Miniconda3 and updates the `base` environment with eo packages.
+
+This can be used on ubuntu machine (EC2 instances) to install the env without
+the jupyter server.
+
+## `install_ec2.sh`
+
+Equivalent of `install.sh` for EC2 instances. Fast bootstrap of `eo` environment
+with Jupyter server
+
+## `user_aliases_conda.sh`
+
+Utility script used to activate a conda environment from a non-interactive shell
+(like when running `source .bashrc` from a ubuntu bash script, which would do
+nothing) or used to activate `conda` from the `.user_aliases` file on a MEP VM
+
+## `requirements.txt`
+Python packages to install in the `base` environment when setting up the Jupyter
+server.
+
+# Docker
+
+Build a docker image with the requirements of `environment.yml` in the base 
+environment.
+Image is based on the dockerfile of `continuumio/miniconda3`.
+
+Build:
+```
+docker build -t eo:base .
+```
