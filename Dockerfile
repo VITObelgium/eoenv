@@ -3,6 +3,7 @@ FROM ubuntu:bionic
 LABEL Daniele Zanaga <daniele.zanaga@vito.be>
 
 ADD ./environment.yml .
+RUN sed "s/name: eo/name: base/g" environment.yml > environment_base.yml
 
 RUN apt-get -qq update && apt-get -qq -y install curl bzip2 gcc \
     && curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
@@ -10,7 +11,7 @@ RUN apt-get -qq update && apt-get -qq -y install curl bzip2 gcc \
     && rm -rf /tmp/miniconda.sh \
     && conda install -y python=3 \
     && conda update conda \
-    && conda env update -f environment.yml \
+    && conda env update -f environment_base.yml \
     && apt-get -qq -y remove curl bzip2 \
     && apt-get -qq -y autoremove \
     && apt-get autoclean \
